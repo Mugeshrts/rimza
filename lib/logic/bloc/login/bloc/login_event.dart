@@ -1,15 +1,16 @@
-abstract class OtpEvent {}
+abstract class LoginEvent {}
 
-class SendOtp extends OtpEvent {
-  final String mobile;
-  SendOtp(this.mobile);
+class SendOtpEvent extends LoginEvent {
+  final String phone;
+
+  SendOtpEvent(this.phone);
 }
 
-class VerifyOtp extends OtpEvent {
-  final String enteredOtp;
-  VerifyOtp(this.enteredOtp);
+class VerifyOtpEvent extends LoginEvent {
+  final String otp;
+
+  VerifyOtpEvent(this.otp);
 }
 
-class ResendOtp extends OtpEvent {}
+class ResendOtpEvent extends LoginEvent {}
 
-class Tick extends OtpEvent {}

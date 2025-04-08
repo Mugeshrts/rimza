@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
+import 'package:rimza/presentation/screens/modeselection.dart';
 import 'package:rimza/presentation/screens/otpscr.dart';
-
 
 class DeviceListScreen extends StatefulWidget {
   @override
@@ -21,7 +21,6 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
   final box = GetStorage();
   List<Map<String, String>> filteredDevices = [];
 
-  
   @override
   void initState() {
     super.initState();
@@ -30,11 +29,17 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
 
   void filterSearch(String query) {
     setState(() {
-      filteredDevices = allDevices.where((device) => device['name']!.toLowerCase().contains(query.toLowerCase())).toList();
+      filteredDevices =
+          allDevices
+              .where(
+                (device) =>
+                    device['name']!.toLowerCase().contains(query.toLowerCase()),
+              )
+              .toList();
     });
   }
 
-   void handleLogout() {
+  void handleLogout() {
     Get.defaultDialog(
       title: "Logout",
       middleText: "Are you sure you want to logout?",
@@ -51,15 +56,12 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-    drawer: Drawer(
+      drawer: Drawer(
         backgroundColor: Colors.blue.shade50,
         child: Column(
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue.shade900,
-              ),
+              decoration: BoxDecoration(color: Colors.blue.shade900),
               child: Center(
                 child: Text(
                   "Welcome 👋",
@@ -76,18 +78,27 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
         ),
       ),
       appBar: AppBar(
-        title: Text("Devices(${filteredDevices.length})", style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          "Devices(${filteredDevices.length})",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: [
-          Text("v1.8", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Center(
+            child: Text(
+              "v1.8",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
           SizedBox(width: 10),
-          Lottie.asset('assets/lotties/green.json', width: 50, height: 50),
+          Lottie.asset('assets/lotties/green.json', width: 60, height: 60),
           SizedBox(width: 10),
         ],
         leading: Builder(
-          builder: (context) => IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
+          builder:
+              (context) => IconButton(
+                icon: Icon(Icons.menu),
+                onPressed: () => Scaffold.of(context).openDrawer(),
+              ),
         ),
       ),
       body: Column(
@@ -101,36 +112,108 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                 prefixIcon: Icon(Icons.search),
                 filled: true,
                 fillColor: Colors.blue[50],
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: filteredDevices.length,
-              itemBuilder: (context, index) {
-                final device = filteredDevices[index];
-                return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                  child: Container(
-                    height: 100,
-                    child: ListTile(
-                      leading: Image.asset('assets/images/Bell Ring.png', width: 60, height: 60,),
-                      title: Text(
-                        device['name']!,
+            child:
+                filteredDevices.isEmpty
+                    ? Center(
+                      child: Text(
+                        "No device available",
                         style: TextStyle(
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: device['name'] == 'RTS office' ? Colors.grey : Colors.black,
                         ),
                       ),
-                      subtitle: Text(device['date']!),
-                      trailing: Text(device['version']!, style: TextStyle(fontWeight: FontWeight.bold)),
+                    )
+                    : ListView.builder(
+                      itemCount: filteredDevices.length,
+                      itemBuilder: (context, index) {
+                        final device = filteredDevices[index];
+                        final isDeviceAvailable =
+                            device['name'] != 'RTS office';
+                        return GestureDetector(
+                          onTap: () {
+                            if (isDeviceAvailable) {
+                              // Navigate using Get
+                              Get.to(
+                                () => ModeSelectionScreen(device: device),
+                              ); // Replace with your screen
+                            } else {
+                              // Show snackbar if no data
+                              Get.snackbar(
+                                "Notice",
+                                "There is no data available for this device.",
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: Colors.redAccent,
+                                colorText: Colors.white,
+                              );
+                            }
+                          },
+                          child: Card(
+                            margin: EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/Bell Ring.png',
+                                    width: 60,
+                                    height: 60,
+                                  ),
+                                  SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          device['name']!,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                            color:
+                                                device['name'] == 'RTS office'
+                                                    ? Colors.grey
+                                                    : Colors.black,
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          device['date']!,
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Text(
+                                    device['version']!,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                );
-              },
-            ),
           ),
         ],
       ),

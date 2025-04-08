@@ -1,4 +1,3 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:get_storage/get_storage.dart';
@@ -6,80 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pinput/pinput.dart';
+import 'package:rimza/logic/bloc/login/bloc/login_bloc.dart';
+import 'package:rimza/logic/bloc/login/bloc/login_event.dart';
+import 'package:rimza/logic/bloc/login/bloc/login_state.dart';
 import 'package:rimza/presentation/screens/home.dart';
-
-abstract class LoginEvent {}
-
-class SendOtpEvent extends LoginEvent {
-  final String phone;
-
-  SendOtpEvent(this.phone);
-}
-
-class VerifyOtpEvent extends LoginEvent {
-  final String otp;
-
-  VerifyOtpEvent(this.otp);
-}
-
-class ResendOtpEvent extends LoginEvent {}
-
-
-
-
-abstract class LoginState {}
-
-class LoginInitial extends LoginState {}
-
-class OtpSentState extends LoginState {}
-
-class LoginLoading extends LoginState {}
-
-class LoginSuccess extends LoginState {}
-
-class LoginFailure extends LoginState {
-  final String message;
-
-  LoginFailure(this.message);
-}
-
-
-
-
-class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final GetStorage storage = GetStorage();
-
-  LoginBloc() : super(LoginInitial()) {
-    on<SendOtpEvent>((event, emit) {
-      if (event.phone.trim() != '8754277347') {
-        emit(LoginFailure("Only valid mobile number is allowed"));
-      } else {
-        emit(OtpSentState());
-        print("OTP sent: ${_currentOtp()}");
-      }
-    });
-
-    on<VerifyOtpEvent>((event, emit) {
-      if (event.otp.trim().isEmpty) {
-        emit(LoginFailure("Please enter the OTP"));
-      } else if (event.otp.trim() != _currentOtp()) {
-        emit(LoginFailure("Invalid OTP"));
-      } else {
-        storage.write('isLoggedIn', true);
-        emit(LoginSuccess());
-      }
-    });
-
-    on<ResendOtpEvent>((event, emit) {
-      emit(OtpSentState());
-      print("OTP resent: ${_currentOtp()}");
-    });
-  }
-
-  String _currentOtp() => DateFormat('HHmm').format(DateTime.now());
-}
-
-
 
 
 class LoginScreen extends StatefulWidget {

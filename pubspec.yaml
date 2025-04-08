@@ -45,6 +45,7 @@ dependencies:
   pinput: ^5.0.1
   lottie: ^3.3.1
   intl_phone_field: ^3.2.0
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -84,11 +85,11 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
+  fonts:
+    - family: Technology
+      fonts:
+        - asset: fonts/Technology-Bold.ttf
+        - asset: fonts/Technology-BoldItalic.ttf
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:
